@@ -7,50 +7,61 @@
 
 import Foundation
 import SwiftUI
+import MapKit
 
 struct CountryDetailView: View {
     let country: Country
     
+    @State private var region: MKCoordinateRegion
+    
+    init(country: Country) {
+        self.country = country
+        
+        let latitude = country.latlng?.first ?? 0.0
+        let longitude = country.latlng?.last ?? 0.0
+        
+        _region = State(initialValue: MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: latitude, longitude: longitude),
+            span: MKCoordinateSpan(latitudeDelta: 10.0, longitudeDelta: 10.0)
+        ))
+    }
+    
     var body: some View {
         ScrollView {
-            VStack(spacing: 28) {
+            VStack(spacing: 20) {
+                // Flag & Country Name
                 Text(country.flag)
-                    .font(.system(size: 120))
-                    .shadow(radius: 4)
+                    .font(.system(size: 80))
                 
                 Text(country.name)
-                    .font(.system(size: 34, weight: .bold))
-                    .foregroundColor(.primary)
+                    .font(.largeTitle)
+                    .bold()
                 
-                VStack(spacing: 20) {
-                    DetailRow(label: "Capital", value: country.capital ?? "N/A")
-                    DetailRow(label: "Currency", value: formattedCurrency())
-                    DetailRow(label: "Coordinates", value: formattedCoordinates())
+                VStack(alignment: .leading, spacing: 12) {
+                    DetailRow(label: "Capital", value: country.capital ?? "-")
+                    DetailRow(label: "Currency", value: country.currencyDescription)
+                    DetailRow(label: "Coordinates", value: country.coordinateDescription)
                 }
-                .padding(24)
+                .padding()
                 .background(Color.white)
-                .cornerRadius(24)
-                .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 4)
+                .cornerRadius(16)
+                .shadow(color: .black.opacity(0.05), radius: 6)
                 .padding(.horizontal)
-                .padding(.bottom, 40)
+                
+                if let _ = country.coordinate {
+                    Map(coordinateRegion: $region, annotationItems: [country]) { item in
+                        MapMarker(coordinate: item.coordinate!)
+                    }
+                    .frame(height: 250)
+                    .cornerRadius(16)
+                    .padding(.horizontal)
+                    .shadow(radius: 6)
+                }
             }
-            .frame(maxWidth: .infinity)
-            .padding(.top, 40)
+            .padding(.top, 30)
         }
-        .gradientBackground()
         .navigationTitle("Country Details")
         .navigationBarTitleDisplayMode(.inline)
-    }
-    
-    private func formattedCurrency() -> String {
-        guard let currency = country.currencies?.first else { return "N/A" }
-        let code = currency.code ?? ""
-        let name = currency.name ?? "Unknown"
-        return "\(name) (\(code))"
-    }
-    
-    private func formattedCoordinates() -> String {
-        guard let coords = country.latlng, coords.count == 2 else { return "N/A" }
-        return String(format: "%.1f, %.1f", coords[0], coords[1])
+        .background(Color.clear.gradientBackground())
     }
 }
