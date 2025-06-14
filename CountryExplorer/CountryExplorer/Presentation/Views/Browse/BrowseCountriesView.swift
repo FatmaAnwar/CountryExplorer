@@ -68,13 +68,21 @@ struct BrowseCountriesView: View {
                     }
                 }
             }
-            .alert(isPresented: $showAlert) {
-                Alert(
-                    title: Text("Limit Reached"),
-                    message: Text("You can only select up to 5 countries."),
-                    dismissButton: .default(Text("OK"))
-                )
-            }
+            .overlay(
+                Group {
+                    if showAlert {
+                        ZStack {
+                            Color.black.opacity(0.3).ignoresSafeArea()
+                            GradientAlertView(
+                                title: "Limit Reached",
+                                message: "You can only select up to 5 countries."
+                            ) {
+                                showAlert = false
+                            }
+                        }
+                    }
+                }
+            )
         }
     }
     
