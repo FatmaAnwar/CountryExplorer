@@ -65,7 +65,7 @@ final class CountryLocalDataSource: CountryLocalDataSourceProtocol {
     func clearCountries() {
         let request: NSFetchRequest<NSFetchRequestResult> = CDCountry.fetchRequest()
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
-        try? context.execute(deleteRequest)
+        _ = try? context.execute(deleteRequest)
     }
     
     func saveSelectedCountries(_ countries: [Country]) {
@@ -112,7 +112,7 @@ final class CountryLocalDataSource: CountryLocalDataSourceProtocol {
     func clearSelectedCountries() {
         let request: NSFetchRequest<NSFetchRequestResult> = CDSelectedCountry.fetchRequest()
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
-        try? context.execute(deleteRequest)
+        _ = try? context.execute(deleteRequest)
     }
     
     private func decodeCurrencies(from base64: String?) -> [Country.Currency]? {
