@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 @MainActor
 final class CountryListViewModel: ObservableObject {
@@ -14,10 +15,16 @@ final class CountryListViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     
+    @Published var searchText: String = ""
+    @Published var debouncedSearchText: String = ""
+    
+    private var cancellables = Set<AnyCancellable>()
+    
     private let fetchCountriesUseCase: FetchCountriesUseCaseProtocol
     
     init(fetchCountriesUseCase: FetchCountriesUseCaseProtocol = FetchCountriesUseCase()) {
         self.fetchCountriesUseCase = fetchCountriesUseCase
+        setupDebounce()
     }
     
     func fetchCountries() async {
@@ -40,6 +47,23 @@ final class CountryListViewModel: ObservableObject {
     func loadInitialSelection() {
         if selectedCountries.isEmpty {
             selectedCountries = Array(countries.prefix(5))
+        }
+    }
+    
+    private func setupDebounce() {
+        $searchText
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .assign(to: &$debouncedSearchText)
+    }
+    
+    var filteredCountries: [Country] {
+        if debouncedSearchText.isEmpty {
+            return countries
+        } else {
+            return countries.filter {
+                $0.name.localizedCaseInsensitiveContains(debouncedSearchText)
+            }
         }
     }
 }

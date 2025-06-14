@@ -7,12 +7,12 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 struct BrowseCountriesView: View {
     @ObservedObject var viewModel: CountryListViewModel
     @Environment(\.dismiss) private var dismiss
     
-    @State private var searchText: String = ""
     @State private var showAlert: Bool = false
     
     var body: some View {
@@ -23,7 +23,7 @@ struct BrowseCountriesView: View {
                 VStack(spacing: 0) {
                     ScrollView {
                         LazyVStack(spacing: 12) {
-                            ForEach(filteredCountries, id: \.id) { country in
+                            ForEach(viewModel.filteredCountries, id: \.id) { country in
                                 HStack {
                                     Text(country.flag)
                                         .font(.title2)
@@ -60,7 +60,7 @@ struct BrowseCountriesView: View {
                 }
             }
             .navigationTitle("Browse Countries")
-            .searchable(text: $searchText, prompt: "Search countries")
+            .searchable(text: $viewModel.searchText, prompt: "Search countries")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Done") {
@@ -97,16 +97,6 @@ struct BrowseCountriesView: View {
             viewModel.selectedCountries.append(country)
         } else {
             showAlert = true
-        }
-    }
-    
-    var filteredCountries: [Country] {
-        if searchText.isEmpty {
-            return viewModel.countries
-        } else {
-            return viewModel.countries.filter {
-                $0.name.localizedCaseInsensitiveContains(searchText)
-            }
         }
     }
 }
