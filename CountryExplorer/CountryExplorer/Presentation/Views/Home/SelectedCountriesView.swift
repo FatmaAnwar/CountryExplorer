@@ -22,7 +22,7 @@ struct SelectedCountriesView: View {
                     if viewModel.selectedCountries.isEmpty {
                         Spacer()
                         VStack(spacing: 12) {
-                            Image(systemName: "globe")
+                            Image(systemName: "globe.europe.africa.fill")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 80, height: 80)
