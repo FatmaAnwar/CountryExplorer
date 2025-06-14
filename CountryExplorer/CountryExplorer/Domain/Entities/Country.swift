@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Country: Identifiable, Codable {
+struct Country: Identifiable, Codable, Hashable {
     var id: UUID = UUID()
     let name: String
     let capital: String?
@@ -15,7 +15,7 @@ struct Country: Identifiable, Codable {
     let alpha2Code: String
     let latlng: [Double]?
     
-    struct Currency: Codable {
+    struct Currency: Codable, Equatable, Hashable {
         let code: String?
         let name: String?
         let symbol: String?
