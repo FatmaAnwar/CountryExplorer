@@ -34,7 +34,10 @@ struct BrowseCountriesView: View {
                         
                         if viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) {
                             Image(systemName: "checkmark.circle.fill")
+                                .resizable()
+                                .frame(width: 20, height: 20)
                                 .foregroundColor(.green)
+                                .padding(.trailing, 4)
                         } else {
                             Button(action: {
                                 if viewModel.selectedCountries.count < 5 {
@@ -43,8 +46,11 @@ struct BrowseCountriesView: View {
                                     showAlert = true
                                 }
                             }) {
-                                Image(systemName: "plus.circle")
+                                Image(systemName: "plus.circle.fill")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
                                     .foregroundColor(.blue)
+                                    .padding(.trailing, 4)
                             }
                         }
                     }
