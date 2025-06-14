@@ -32,7 +32,10 @@ final class CountryListViewModel: ObservableObject {
         self.fetchCountriesUseCase = fetchCountriesUseCase
         self.localDataSource = localDataSource
         self.networkMonitor = networkMonitor
+        
         setupDebounce()
+        observeSelectionChanges()
+        loadSelectedCountries()
     }
     
     func fetchCountries() async {
@@ -60,10 +63,13 @@ final class CountryListViewModel: ObservableObject {
         selectedCountries.removeAll { $0.id == country.id }
     }
     
-    func loadInitialSelection() {
-        if selectedCountries.isEmpty {
-            selectedCountries = Array(countries.prefix(5))
-        }
+    func select(_ country: Country) {
+        guard !selectedCountries.contains(where: { $0.id == country.id }) else { return }
+        selectedCountries.append(country)
+    }
+    
+    func loadSelectedCountries() {
+        selectedCountries = localDataSource.getSelectedCountries()
     }
     
     private func setupDebounce() {
@@ -71,6 +77,15 @@ final class CountryListViewModel: ObservableObject {
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
             .removeDuplicates()
             .assign(to: &$debouncedSearchText)
+    }
+    
+    private func observeSelectionChanges() {
+        $selectedCountries
+            .dropFirst()
+            .sink { [weak self] updated in
+                self?.localDataSource.saveSelectedCountries(updated)
+            }
+            .store(in: &cancellables)
     }
     
     var filteredCountries: [Country] {
