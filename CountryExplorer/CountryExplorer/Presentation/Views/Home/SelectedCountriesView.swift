@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SelectedCountriesView: View {
     @StateObject private var viewModel = CountryListViewModel()
+    @State private var isShowingBrowse = false
     
     var body: some View {
         NavigationView {
@@ -54,6 +55,7 @@ struct SelectedCountriesView: View {
                 Spacer()
                 
                 Button(action: {
+                    isShowingBrowse = true
                 }) {
                     Text("Browse Countries")
                         .frame(maxWidth: .infinity)
@@ -64,6 +66,9 @@ struct SelectedCountriesView: View {
                         .padding(.horizontal)
                 }
                 .padding(.bottom, 16)
+                .sheet(isPresented: $isShowingBrowse) {
+                    BrowseCountriesView(viewModel: viewModel)
+                }
             }
             .navigationTitle("Selected Countries")
             .task {
