@@ -14,60 +14,84 @@ struct SelectedCountriesView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                if viewModel.selectedCountries.isEmpty {
-                    Text("No countries selected.")
-                        .foregroundColor(.gray)
-                        .padding(.top, 100)
-                } else {
-                    ScrollView {
-                        LazyVStack(spacing: 12) {
-                            ForEach(viewModel.selectedCountries, id: \.id) { country in
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(country.name)
-                                            .font(.headline)
-                                        if let capital = country.capital {
-                                            Text("Capital: \(capital)")
-                                                .font(.subheadline)
-                                                .foregroundColor(.gray)
+            ZStack {
+                Color.clear.gradientBackground()
+                
+                VStack {
+                    if viewModel.selectedCountries.isEmpty {
+                        Spacer()
+                        Text("No countries selected.")
+                            .foregroundColor(.gray)
+                            .padding(.bottom, 20)
+                    } else {
+                        ScrollView {
+                            LazyVStack(spacing: 12) {
+                                ForEach(viewModel.selectedCountries, id: \.id) { country in
+                                    HStack {
+                                        Text(country.flag)
+                                            .font(.title2)
+                                        
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(country.name)
+                                                .font(.headline)
+                                            if let capital = country.capital {
+                                                Text("Capital: \(capital)")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.gray)
+                                            }
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Button(action: {
+                                            viewModel.remove(country)
+                                        }) {
+                                            Image(systemName: "trash")
+                                                .font(.system(size: 20))
+                                                .padding(10)
+                                                .background(Color.white)
+                                                .foregroundColor(.red)
+                                                .clipShape(Circle())
+                                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                                         }
                                     }
-                                    Spacer()
-                                    Button {
-                                        viewModel.remove(country)
-                                    } label: {
-                                        Image(systemName: "trash")
-                                            .foregroundColor(.red)
-                                    }
+                                    .padding()
+                                    .background(Color.white)
+                                    .cornerRadius(14)
+                                    .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+                                    .padding(.horizontal)
                                 }
-                                .padding()
-                                .background(Color(.secondarySystemBackground))
-                                .cornerRadius(12)
-                                .shadow(radius: 2)
-                                .padding(.horizontal)
                             }
+                            .padding(.top)
                         }
-                        .padding(.top)
                     }
-                }
-                
-                Spacer()
-                
-                Button(action: {
-                    isShowingBrowse = true
-                }) {
-                    Text("Browse Countries")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
-                        .padding(.horizontal)
-                }
-                .padding(.bottom, 16)
-                .sheet(isPresented: $isShowingBrowse) {
-                    BrowseCountriesView(viewModel: viewModel)
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        isShowingBrowse = true
+                    }) {
+                        Text("Browse Countries")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(
+                                LinearGradient(
+                                    colors: [
+                                        Color(red: 0.3, green: 0.6, blue: 1.0),
+                                        Color(red: 0.7, green: 0.4, blue: 1.0)
+                                    ],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .foregroundColor(.white)
+                            .cornerRadius(14)
+                            .padding(.horizontal)
+                    }
+                    .padding(.bottom, 16)
+                    .sheet(isPresented: $isShowingBrowse) {
+                        BrowseCountriesView(viewModel: viewModel)
+                    }
                 }
             }
             .navigationTitle("Selected Countries")
