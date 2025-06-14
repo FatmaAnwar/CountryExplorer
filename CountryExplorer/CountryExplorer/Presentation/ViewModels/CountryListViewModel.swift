@@ -21,20 +21,39 @@ final class CountryListViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     private let fetchCountriesUseCase: FetchCountriesUseCaseProtocol
+    private let localDataSource: CountryLocalDataSourceProtocol
+    private let networkMonitor: NetworkMonitor
     
-    init(fetchCountriesUseCase: FetchCountriesUseCaseProtocol = FetchCountriesUseCase()) {
+    init(
+        fetchCountriesUseCase: FetchCountriesUseCaseProtocol = FetchCountriesUseCase(),
+        localDataSource: CountryLocalDataSourceProtocol = CountryLocalDataSource(),
+        networkMonitor: NetworkMonitor = .shared
+    ) {
         self.fetchCountriesUseCase = fetchCountriesUseCase
+        self.localDataSource = localDataSource
+        self.networkMonitor = networkMonitor
+        
         setupDebounce()
+        observeSelectionChanges()
+        loadSelectedCountries()
     }
     
     func fetchCountries() async {
         isLoading = true
         errorMessage = nil
         
-        do {
-            countries = try await fetchCountriesUseCase.execute()
-        } catch {
-            errorMessage = "Failed to fetch countries: \(error.localizedDescription)"
+        if networkMonitor.isConnected {
+            do {
+                let remoteCountries = try await fetchCountriesUseCase.execute()
+                countries = remoteCountries
+                localDataSource.save(countries: remoteCountries)
+            } catch {
+                countries = localDataSource.getCachedCountries()
+                errorMessage = "Loaded from cache due to network issue."
+            }
+        } else {
+            countries = localDataSource.getCachedCountries()
+            errorMessage = "You are offline. Displaying cached data."
         }
         
         isLoading = false
@@ -44,10 +63,13 @@ final class CountryListViewModel: ObservableObject {
         selectedCountries.removeAll { $0.id == country.id }
     }
     
-    func loadInitialSelection() {
-        if selectedCountries.isEmpty {
-            selectedCountries = Array(countries.prefix(5))
-        }
+    func select(_ country: Country) {
+        guard !selectedCountries.contains(where: { $0.id == country.id }) else { return }
+        selectedCountries.append(country)
+    }
+    
+    func loadSelectedCountries() {
+        selectedCountries = localDataSource.getSelectedCountries()
     }
     
     private func setupDebounce() {
@@ -55,6 +77,15 @@ final class CountryListViewModel: ObservableObject {
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
             .removeDuplicates()
             .assign(to: &$debouncedSearchText)
+    }
+    
+    private func observeSelectionChanges() {
+        $selectedCountries
+            .dropFirst()
+            .sink { [weak self] updated in
+                self?.localDataSource.saveSelectedCountries(updated)
+            }
+            .store(in: &cancellables)
     }
     
     var filteredCountries: [Country] {
