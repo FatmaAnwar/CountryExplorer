@@ -32,27 +32,24 @@ struct BrowseCountriesView: View {
                         
                         Spacer()
                         
-                        if viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundColor(.green)
-                                .padding(.trailing, 4)
-                        } else {
-                            Button(action: {
+                        Button {
+                            if let index = viewModel.selectedCountries.firstIndex(where: { $0.alpha2Code == country.alpha2Code }) {
+                                viewModel.selectedCountries.remove(at: index)
+                            } else {
                                 if viewModel.selectedCountries.count < 5 {
                                     viewModel.selectedCountries.append(country)
                                 } else {
                                     showAlert = true
                                 }
-                            }) {
-                                Image(systemName: "plus.circle.fill")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                    .foregroundColor(.blue)
-                                    .padding(.trailing, 4)
                             }
+                        } label: {
+                            Image(systemName: viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) ? "checkmark.circle.fill" : "plus.circle.fill")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundColor(viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) ? .green : .blue)
+                                .padding(.trailing, 4)
                         }
+                        
                     }
                     .padding(.vertical, 6)
                 }
