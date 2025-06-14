@@ -48,6 +48,9 @@ struct SelectedCountriesView: View {
                                             VStack(alignment: .leading, spacing: 4) {
                                                 Text(country.name)
                                                     .font(.headline)
+                                                    .foregroundColor(.blue)
+                                                    .multilineTextAlignment(.leading)
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
                                                 if let capital = country.capital {
                                                     Text("Capital: \(capital)")
                                                         .font(.subheadline)
