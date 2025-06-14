@@ -17,44 +17,45 @@ struct BrowseCountriesView: View {
     
     var body: some View {
         NavigationView {
-            List {
-                ForEach(filteredCountries, id: \.id) { country in
-                    HStack(spacing: 12) {
-                        
-                        Text(country.flag)
-                            .font(.largeTitle)
-                        
-                        VStack(alignment: .leading) {
-                            Text(country.name)
-                                .font(.headline)
-                            if let capital = country.capital {
-                                Text("Capital: \(capital)")
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
+            ZStack {
+                Color.clear.gradientBackground()
+                
+                VStack(spacing: 0) {
+                    ScrollView {
+                        LazyVStack(spacing: 12) {
+                            ForEach(filteredCountries, id: \.id) { country in
+                                HStack {
+                                    Text(country.flag)
+                                        .font(.title2)
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(country.name)
+                                            .font(.headline)
+                                        if let capital = country.capital {
+                                            Text(capital)
+                                                .font(.subheadline)
+                                                .foregroundColor(.gray)
+                                        }
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: isSelected(country) ? "checkmark.circle.fill" : "plus.circle.fill")
+                                        .resizable()
+                                        .frame(width: 22, height: 22)
+                                        .foregroundColor(isSelected(country) ? .green : .blue)
+                                }
+                                .padding()
+                                .background(isSelected(country) ? Color.green.opacity(0.15) : Color.white)
+                                .cornerRadius(14)
+                                .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+                                .padding(.horizontal)
+                                .onTapGesture {
+                                    toggleSelection(for: country)
+                                }
                             }
                         }
-                        
-                        Spacer()
-                        
-                        Image(systemName: viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) ? "checkmark.circle.fill" : "plus.circle.fill")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundColor(viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) ? .green : .blue)
-                            .padding(.trailing, 4)
-                    }
-                    .padding(.vertical, 8)
-                    .padding(.horizontal)
-                    .background(viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) ? Color.green.opacity(0.1) : Color.clear)
-                    .cornerRadius(10)
-                    .shadow(color: .black.opacity(0.05), radius: 1, x: 0, y: 1)
-                    .onTapGesture {
-                        if let index = viewModel.selectedCountries.firstIndex(where: { $0.alpha2Code == country.alpha2Code }) {
-                            viewModel.selectedCountries.remove(at: index)
-                        } else if viewModel.selectedCountries.count < 5 {
-                            viewModel.selectedCountries.append(country)
-                        } else {
-                            showAlert = true
-                        }
+                        .padding(.top)
                     }
                 }
             }
@@ -74,6 +75,20 @@ struct BrowseCountriesView: View {
                     dismissButton: .default(Text("OK"))
                 )
             }
+        }
+    }
+    
+    private func isSelected(_ country: Country) -> Bool {
+        viewModel.selectedCountries.contains { $0.alpha2Code == country.alpha2Code }
+    }
+    
+    private func toggleSelection(for country: Country) {
+        if let index = viewModel.selectedCountries.firstIndex(where: { $0.alpha2Code == country.alpha2Code }) {
+            viewModel.selectedCountries.remove(at: index)
+        } else if viewModel.selectedCountries.count < 5 {
+            viewModel.selectedCountries.append(country)
+        } else {
+            showAlert = true
         }
     }
     
