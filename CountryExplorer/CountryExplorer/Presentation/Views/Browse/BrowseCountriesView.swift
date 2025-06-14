@@ -32,26 +32,25 @@ struct BrowseCountriesView: View {
                         
                         Spacer()
                         
-                        Button {
-                            if let index = viewModel.selectedCountries.firstIndex(where: { $0.alpha2Code == country.alpha2Code }) {
-                                viewModel.selectedCountries.remove(at: index)
-                            } else {
-                                if viewModel.selectedCountries.count < 5 {
-                                    viewModel.selectedCountries.append(country)
-                                } else {
-                                    showAlert = true
-                                }
-                            }
-                        } label: {
-                            Image(systemName: viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) ? "checkmark.circle.fill" : "plus.circle.fill")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundColor(viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) ? .green : .blue)
-                                .padding(.trailing, 4)
-                        }
-                        
+                        Image(systemName: viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) ? "checkmark.circle.fill" : "plus.circle.fill")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) ? .green : .blue)
+                            .padding(.trailing, 4)
                     }
-                    .padding(.vertical, 6)
+                    .padding()
+                    .background(viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) ? Color.green.opacity(0.1) : Color.clear)
+                    .cornerRadius(10)
+                    .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+                    .onTapGesture {
+                        if let index = viewModel.selectedCountries.firstIndex(where: { $0.alpha2Code == country.alpha2Code }) {
+                            viewModel.selectedCountries.remove(at: index)
+                        } else if viewModel.selectedCountries.count < 5 {
+                            viewModel.selectedCountries.append(country)
+                        } else {
+                            showAlert = true
+                        }
+                    }
                 }
             }
             .navigationTitle("Browse Countries")
