@@ -72,8 +72,7 @@ struct SelectedCountriesView: View {
             }
             .navigationTitle("Selected Countries")
             .task {
-                // await viewModel.fetchCountries()
-                viewModel.loadDummySelection()
+                await viewModel.fetchCountries()
             }
         }
     }

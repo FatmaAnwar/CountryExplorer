@@ -11,9 +11,9 @@ import SwiftUI
 struct BrowseCountriesView: View {
     @ObservedObject var viewModel: CountryListViewModel
     @Environment(\.dismiss) private var dismiss
-
+    
     @State private var searchText: String = ""
-
+    
     var body: some View {
         NavigationView {
             List {
@@ -28,9 +28,9 @@ struct BrowseCountriesView: View {
                                     .foregroundColor(.gray)
                             }
                         }
-
+                        
                         Spacer()
-
+                        
                         if viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundColor(.green)
@@ -59,7 +59,7 @@ struct BrowseCountriesView: View {
             }
         }
     }
-
+    
     var filteredCountries: [Country] {
         if searchText.isEmpty {
             return viewModel.countries
