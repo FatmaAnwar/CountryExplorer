@@ -8,8 +8,7 @@
 import Foundation
 
 struct Country: Identifiable, Codable {
-    let id = UUID()
-    
+    var id: UUID = UUID()
     let name: String
     let capital: String?
     let currencies: [Currency]?
@@ -22,8 +21,7 @@ struct Country: Identifiable, Codable {
         let symbol: String?
     }
     
-    private enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case name, capital, currencies, alpha2Code, latlng
     }
 }
-
