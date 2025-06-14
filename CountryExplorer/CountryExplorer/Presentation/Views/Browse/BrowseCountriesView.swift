@@ -19,7 +19,11 @@ struct BrowseCountriesView: View {
         NavigationView {
             List {
                 ForEach(filteredCountries, id: \.id) { country in
-                    HStack {
+                    HStack(spacing: 12) {
+                        
+                        Text(country.flag)
+                            .font(.largeTitle)
+                        
                         VStack(alignment: .leading) {
                             Text(country.name)
                                 .font(.headline)
@@ -38,10 +42,11 @@ struct BrowseCountriesView: View {
                             .foregroundColor(viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) ? .green : .blue)
                             .padding(.trailing, 4)
                     }
-                    .padding()
+                    .padding(.vertical, 8)
+                    .padding(.horizontal)
                     .background(viewModel.selectedCountries.contains(where: { $0.alpha2Code == country.alpha2Code }) ? Color.green.opacity(0.1) : Color.clear)
                     .cornerRadius(10)
-                    .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+                    .shadow(color: .black.opacity(0.05), radius: 1, x: 0, y: 1)
                     .onTapGesture {
                         if let index = viewModel.selectedCountries.firstIndex(where: { $0.alpha2Code == country.alpha2Code }) {
                             viewModel.selectedCountries.remove(at: index)

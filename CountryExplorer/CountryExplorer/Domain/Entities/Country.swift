@@ -25,3 +25,14 @@ struct Country: Identifiable, Codable {
         case name, capital, currencies, alpha2Code, latlng
     }
 }
+
+extension Country {
+    var flag: String {
+        alpha2Code
+            .uppercased()
+            .unicodeScalars
+            .compactMap { UnicodeScalar(127397 + $0.value) }
+            .map { String($0) }
+            .joined()
+    }
+}
