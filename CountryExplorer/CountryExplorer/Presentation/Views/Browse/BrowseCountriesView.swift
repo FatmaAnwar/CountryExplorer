@@ -13,6 +13,7 @@ struct BrowseCountriesView: View {
     @Environment(\.dismiss) private var dismiss
     
     @State private var searchText: String = ""
+    @State private var showAlert: Bool = false
     
     var body: some View {
         NavigationView {
@@ -38,6 +39,8 @@ struct BrowseCountriesView: View {
                             Button(action: {
                                 if viewModel.selectedCountries.count < 5 {
                                     viewModel.selectedCountries.append(country)
+                                } else {
+                                    showAlert = true
                                 }
                             }) {
                                 Image(systemName: "plus.circle")
@@ -57,6 +60,13 @@ struct BrowseCountriesView: View {
                     }
                 }
             }
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("Limit Reached"),
+                    message: Text("You can only select up to 5 countries."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
         }
     }
     
@@ -64,7 +74,9 @@ struct BrowseCountriesView: View {
         if searchText.isEmpty {
             return viewModel.countries
         } else {
-            return viewModel.countries.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+            return viewModel.countries.filter {
+                $0.name.localizedCaseInsensitiveContains(searchText)
+            }
         }
     }
 }
