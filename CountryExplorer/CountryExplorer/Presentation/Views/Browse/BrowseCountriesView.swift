@@ -25,22 +25,29 @@ struct BrowseCountriesView: View {
                     
                     if viewModel.isLoading {
                         ZStack {
-                            Color.black.opacity(0.2).ignoresSafeArea()
-                            ProgressView("Loading...")
-                                .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                                .padding()
-                                .background(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: [
-                                            Color(red: 0.90, green: 0.95, blue: 1.0),
-                                            Color.white
-                                        ]),
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
-                                )
-                                .cornerRadius(16)
-                                .shadow(radius: 10)
+                            LinearGradient(
+                                gradient: Gradient(colors: [
+                                    Color(red: 0.90, green: 0.95, blue: 1.0),
+                                    Color.white
+                                ]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                            .ignoresSafeArea()
+                            
+                            VStack(spacing: 16) {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                                    .scaleEffect(1.5)
+                                
+                                Text("Loading...")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                            }
+                            .padding(32)
+                            .background(Color.white.opacity(0.95))
+                            .cornerRadius(20)
+                            .shadow(radius: 10)
                         }
                     } else {
                         ScrollView {
