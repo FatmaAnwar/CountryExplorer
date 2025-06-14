@@ -21,41 +21,62 @@ struct BrowseCountriesView: View {
                 Color.clear.gradientBackground()
                 
                 VStack(spacing: 0) {
-                    ScrollView {
-                        LazyVStack(spacing: 12) {
-                            ForEach(viewModel.filteredCountries, id: \.id) { country in
-                                HStack {
-                                    Text(country.flag)
-                                        .font(.title2)
-                                    
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(country.name)
-                                            .font(.headline)
-                                        if let capital = country.capital {
-                                            Text(capital)
-                                                .font(.subheadline)
-                                                .foregroundColor(.gray)
-                                        }
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    Image(systemName: isSelected(country) ? "checkmark.circle.fill" : "plus.circle.fill")
-                                        .resizable()
-                                        .frame(width: 22, height: 22)
-                                        .foregroundColor(isSelected(country) ? .green : .blue)
-                                }
+                    if viewModel.isLoading {
+                        ZStack {
+                            Color.black.opacity(0.2).ignoresSafeArea()
+                            ProgressView("Loading...")
+                                .progressViewStyle(CircularProgressViewStyle(tint: .blue))
                                 .padding()
-                                .background(isSelected(country) ? Color.green.opacity(0.15) : Color.white)
-                                .cornerRadius(14)
-                                .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
-                                .padding(.horizontal)
-                                .onTapGesture {
-                                    toggleSelection(for: country)
+                                .background(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [
+                                            Color(red: 0.90, green: 0.95, blue: 1.0),
+                                            Color.white
+                                        ]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .cornerRadius(16)
+                                .shadow(radius: 10)
+                        }
+                    } else {
+                        ScrollView {
+                            LazyVStack(spacing: 12) {
+                                ForEach(viewModel.filteredCountries, id: \.id) { country in
+                                    HStack {
+                                        Text(country.flag)
+                                            .font(.title2)
+                                        
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(country.name)
+                                                .font(.headline)
+                                            if let capital = country.capital {
+                                                Text(capital)
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.gray)
+                                            }
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Image(systemName: isSelected(country) ? "checkmark.circle.fill" : "plus.circle.fill")
+                                            .resizable()
+                                            .frame(width: 22, height: 22)
+                                            .foregroundColor(isSelected(country) ? .green : .blue)
+                                    }
+                                    .padding()
+                                    .background(isSelected(country) ? Color.green.opacity(0.15) : Color.white)
+                                    .cornerRadius(14)
+                                    .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+                                    .padding(.horizontal)
+                                    .onTapGesture {
+                                        toggleSelection(for: country)
+                                    }
                                 }
                             }
+                            .padding(.top)
                         }
-                        .padding(.top)
                     }
                 }
             }
@@ -83,6 +104,13 @@ struct BrowseCountriesView: View {
                     }
                 }
             )
+            .onAppear {
+                if viewModel.countries.isEmpty {
+                    Task {
+                        await viewModel.fetchCountries()
+                    }
+                }
+            }
         }
     }
     
