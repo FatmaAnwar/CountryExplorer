@@ -21,6 +21,8 @@ struct BrowseCountriesView: View {
                 Color.clear.gradientBackground()
                 
                 VStack(spacing: 0) {
+                    GradientSearchBar(text: $viewModel.searchText)
+                    
                     if viewModel.isLoading {
                         ZStack {
                             Color.black.opacity(0.2).ignoresSafeArea()
@@ -81,7 +83,6 @@ struct BrowseCountriesView: View {
                 }
             }
             .navigationTitle("Browse Countries")
-            .searchable(text: $viewModel.searchText, prompt: "Search countries")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Done") {
