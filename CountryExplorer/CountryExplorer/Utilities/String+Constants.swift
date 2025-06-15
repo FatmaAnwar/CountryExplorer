@@ -32,4 +32,11 @@ enum AppStrings {
     // MARK: - Loading / General
     static let loading = "Loading..."
     static let ok = "OK"
+    
+    // MARK: - CoreData Model
+    static let coreDataModelName = "CountryExplorerModel"
+    
+    // MARK: - Fatal Error Messages    
+    static let coreDataLoadError = "Unresolved Core Data error"
+    static let coreDataSaveError = "Unresolved Core Data save error"
 }

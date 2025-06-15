@@ -9,28 +9,26 @@ import Foundation
 import CoreData
 
 final class CountryLocalDataSource: CountryLocalDataSourceProtocol {
-    private let context = CoreDataStack.shared.context
+    private let context: NSManagedObjectContext
+    
+    init(context: NSManagedObjectContext = CoreDataStack.shared.context) {
+        self.context = context
+    }
     
     func save(countries: [Country]) {
         clearCountries()
-        
-        for country in countries {
+        countries.forEach {
             let entity = CDCountry(context: context)
-            CountryEntityMapper.toEntity(country, into: entity)
+            CountryEntityMapper.toEntity($0, into: entity)
         }
-        
         CoreDataStack.shared.saveContext()
     }
     
     func getCachedCountries() -> [Country] {
         let request: NSFetchRequest<CDCountry> = CDCountry.fetchRequest()
-        
-        do {
-            let result = try context.fetch(request)
-            return result.compactMap { CountryEntityMapper.fromEntity($0) }
-        } catch {
-            return []
-        }
+        return (try? context.fetch(request))?.compactMap {
+            CountryEntityMapper.fromEntity($0)
+        } ?? []
     }
     
     func clearCountries() {
@@ -39,26 +37,22 @@ final class CountryLocalDataSource: CountryLocalDataSourceProtocol {
         _ = try? context.execute(deleteRequest)
     }
     
+    // MARK: - Selected Countries
+    
     func saveSelectedCountries(_ countries: [Country]) {
         clearSelectedCountries()
-        
-        for country in countries {
+        countries.forEach {
             let entity = CDSelectedCountry(context: context)
-            CountryEntityMapper.toSelectedEntity(country, into: entity)
+            CountryEntityMapper.toSelectedEntity($0, into: entity)
         }
-        
         CoreDataStack.shared.saveContext()
     }
     
     func getSelectedCountries() -> [Country] {
         let request: NSFetchRequest<CDSelectedCountry> = CDSelectedCountry.fetchRequest()
-        
-        do {
-            let result = try context.fetch(request)
-            return result.compactMap { CountryEntityMapper.fromSelectedEntity($0) }
-        } catch {
-            return []
-        }
+        return (try? context.fetch(request))?.compactMap {
+            CountryEntityMapper.fromSelectedEntity($0)
+        } ?? []
     }
     
     func clearSelectedCountries() {
