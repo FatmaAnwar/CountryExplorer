@@ -59,13 +59,13 @@ struct CountryEntityMapper {
         entity.currencies = encodeCurrencies(from: country.currencies)
     }
     
-    private static func encodeCurrencies(from currencies: [Country.Currency]?) -> String? {
+    static func encodeCurrencies(from currencies: [Country.Currency]?) -> String? {
         guard let currencies = currencies,
               let data = try? JSONEncoder().encode(currencies) else { return nil }
         return data.base64EncodedString()
     }
     
-    private static func decodeCurrencies(from base64: String?) -> [Country.Currency]? {
+    static func decodeCurrencies(from base64: String?) -> [Country.Currency]? {
         guard let base64 = base64,
               let data = Data(base64Encoded: base64) else { return nil }
         return try? JSONDecoder().decode([Country.Currency].self, from: data)

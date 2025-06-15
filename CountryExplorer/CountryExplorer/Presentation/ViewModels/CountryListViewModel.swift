@@ -91,4 +91,10 @@ final class CountryListViewModel: ObservableObject {
     func loadSelectedCountries() {
         selectedCountries = localDataSource.getSelectedCountries()
     }
+    
+#if DEBUG
+    func _injectCountriesForTesting(_ countries: [Country]) {
+        self.countries = countries
+    }
+#endif
 }
