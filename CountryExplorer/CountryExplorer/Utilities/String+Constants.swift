@@ -49,4 +49,6 @@ enum AppStrings {
     
     // MARK: - Network
     static let networkMonitorQueueLabel = "NetworkMonitorQueue"
+    static let networkFallbackMessage = "Loaded from cache due to network issue."
+    static let offlineMessage = "You are offline. Displaying cached data."
 }
