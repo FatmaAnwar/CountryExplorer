@@ -33,10 +33,12 @@ final class AppCoordinator: ObservableObject {
             let useCase = FetchCountriesUseCase(remoteDataSource: remote)
             let local = CountryLocalDataSource()
             let monitor = NetworkMonitor.shared
+            let locationManager = CountryLocationManager()
             return CountryListViewModel(
                 fetchCountriesUseCase: useCase,
                 localDataSource: local,
-                networkMonitor: monitor
+                networkMonitor: monitor,
+                locationManager: locationManager
             )
         })
     }

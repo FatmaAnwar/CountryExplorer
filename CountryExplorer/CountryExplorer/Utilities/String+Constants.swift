@@ -18,6 +18,7 @@ enum AppStrings {
     static let browseButtonTitle = "Browse Countries"
     static let browseDone = "Done"
     static let ok = "OK"
+    static let delete = "Delete"
     
     // MARK: - Browse Limits
     static let browseLimitTitle = "Limit Reached"
