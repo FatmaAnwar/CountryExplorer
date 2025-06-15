@@ -9,34 +9,41 @@ import Foundation
 
 enum AppStrings {
     
-    // MARK: - Browse Countries
+    // MARK: - Titles
+    static let selectedCountriesTitle = "Selected Countries"
     static let browseTitle = "Browse Countries"
+    static let countryDetailsTitle = "Country Details"
+    
+    // MARK: - Buttons
+    static let browseButtonTitle = "Browse Countries"
     static let browseDone = "Done"
+    static let ok = "OK"
+    
+    // MARK: - Browse Limits
     static let browseLimitTitle = "Limit Reached"
     static let browseLimitMessage = "You can only select up to 5 countries."
+    
+    // MARK: - Placeholders
     static let searchPlaceholder = "Search countries"
     
-    // MARK: - Selected Countries
-    static let selectedCountriesTitle = "Selected Countries"
+    // MARK: - Empty State
     static let noSelectionTitle = "No countries selected."
     static let noSelectionSubtitle = "Browse and select up to 5 countries."
-    static let browseButtonTitle = "Browse Countries"
-    static let capitalPrefix = "Capital:"
     
-    // MARK: - Country Detail
-    static let countryDetailsTitle = "Country Details"
+    // MARK: - Labels
+    static let capitalPrefix = "Capital:"
     static let labelCapital = "Capital"
     static let labelCurrency = "Currency"
     static let labelCoordinates = "Coordinates"
     
-    // MARK: - Loading / General
+    // MARK: - Loading
     static let loading = "Loading..."
-    static let ok = "OK"
     
-    // MARK: - CoreData Model
+    // MARK: - Core Data
     static let coreDataModelName = "CountryExplorerModel"
-    
-    // MARK: - Fatal Error Messages    
-    static let coreDataLoadError = "Unresolved Core Data error"
+    static let coreDataLoadError = "Unresolved Core Data load error"
     static let coreDataSaveError = "Unresolved Core Data save error"
+    
+    // MARK: - API Endpoints
+    static let apiAllCountriesEndpoint = "https://restcountries.com/v2/all?fields=name,capital,currencies,alpha2Code,latlng"
 }

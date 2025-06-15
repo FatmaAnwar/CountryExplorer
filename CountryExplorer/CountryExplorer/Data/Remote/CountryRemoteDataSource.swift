@@ -9,14 +9,14 @@ import Foundation
 
 final class CountryRemoteDataSource: CountryRemoteDataSourceProtocol {
     private let apiService: APIServiceProtocol
+    private let endpoint = URL(string: AppStrings.apiAllCountriesEndpoint)!
     
     init(apiService: APIServiceProtocol = APIService()) {
         self.apiService = apiService
     }
     
     func fetchAllCountries() async throws -> [Country] {
-        let url = URL(string: "https://restcountries.com/v2/all?fields=name,capital,currencies,alpha2Code,latlng")!
-        let dtos: [CountryDTO] = try await apiService.fetch(from: url)
+        let dtos: [CountryDTO] = try await apiService.fetch(from: endpoint)
         return CountryDTOMapper.mapList(dtos)
     }
 }
