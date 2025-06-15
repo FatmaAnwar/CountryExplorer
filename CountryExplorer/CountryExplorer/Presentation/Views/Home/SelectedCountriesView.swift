@@ -28,7 +28,7 @@ struct SelectedCountriesView: View {
                                 .frame(width: 80, height: 80)
                                 .gradientForeground()
                             
-                            Text("No countries selected.")
+                            Text(AppStrings.noSelectionTitle)
                                 .font(.headline)
                                 .foregroundColor(.gray)
                         }
@@ -52,7 +52,7 @@ struct SelectedCountriesView: View {
                                                     .multilineTextAlignment(.leading)
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                                 if let capital = country.capital {
-                                                    Text("Capital: \(capital)")
+                                                    Text("\(AppStrings.capitalPrefix) \(capital)")
                                                         .font(.subheadline)
                                                         .foregroundColor(.gray)
                                                 }
@@ -81,7 +81,7 @@ struct SelectedCountriesView: View {
                     Button(action: {
                         isShowingBrowse = true
                     }) {
-                        Text("Browse Countries")
+                        Text(AppStrings.browseButtonTitle)
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(
@@ -98,7 +98,7 @@ struct SelectedCountriesView: View {
                     .padding(.bottom, 20)
                 }
             }
-            .navigationTitle("Selected Countries")
+            .navigationTitle(AppStrings.selectedCountriesTitle)
             .navigationDestination(item: $selectedCountryForDetail) { country in
                 CountryDetailView(country: country)
             }

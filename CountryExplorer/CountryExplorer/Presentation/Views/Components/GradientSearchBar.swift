@@ -17,7 +17,7 @@ struct GradientSearchBar: View {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.gray)
 
-            TextField("Search countries", text: $text)
+            TextField(AppStrings.searchPlaceholder, text: $text)
                 .textFieldStyle(PlainTextFieldStyle())
                 .focused($isFocused)
                 .padding(.vertical, 8)

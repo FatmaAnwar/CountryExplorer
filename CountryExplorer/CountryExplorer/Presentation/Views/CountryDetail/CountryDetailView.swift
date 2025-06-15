@@ -38,9 +38,9 @@ struct CountryDetailView: View {
                     .bold()
                 
                 VStack(alignment: .leading, spacing: 12) {
-                    DetailRow(label: "Capital", value: country.capital ?? "-")
-                    DetailRow(label: "Currency", value: country.currencyDescription)
-                    DetailRow(label: "Coordinates", value: country.coordinateDescription)
+                    DetailRow(label: AppStrings.labelCapital, value: country.capital ?? "-")
+                    DetailRow(label: AppStrings.labelCurrency, value: country.currencyDescription)
+                    DetailRow(label: AppStrings.labelCoordinates, value: country.coordinateDescription)
                 }
                 .padding()
                 .background(Color.white)
@@ -60,7 +60,7 @@ struct CountryDetailView: View {
             }
             .padding(.top, 30)
         }
-        .navigationTitle("Country Details")
+        .navigationTitle(AppStrings.countryDetailsTitle)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color.clear.gradientBackground())
     }
