@@ -18,7 +18,7 @@ struct CountryDetailInfoCard: View {
             DetailRow(label: AppStrings.labelCoordinates, value: country.coordinateDescription)
         }
         .padding()
-        .background(Color.white)
+        .background(Color("CardBackground"))
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.05), radius: 6)
         .padding(.horizontal)

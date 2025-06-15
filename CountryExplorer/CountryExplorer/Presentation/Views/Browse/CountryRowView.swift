@@ -42,7 +42,7 @@ struct CountryRowView: View {
                 .accessibilityHidden(true)
         }
         .padding()
-        .background(isSelected ? Color.green.opacity(0.15) : Color.white)
+        .background(isSelected ? Color.green.opacity(0.15) : Color("CardBackground"))
         .cornerRadius(14)
         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
         .padding(.horizontal)

@@ -11,6 +11,7 @@ import SwiftUI
 struct GradientSearchBar: View {
     @Binding var text: String
     @FocusState private var isFocused: Bool
+    @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         HStack {
@@ -49,8 +50,11 @@ struct GradientSearchBar: View {
                 )
                 .background(
                     RoundedRectangle(cornerRadius: 14)
-                        .fill(Color.white)
-                        .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+                        .fill(Color("CardBackground"))
+                        .shadow(
+                            color: .black.opacity(colorScheme == .dark ? 0.2 : 0.05),
+                            radius: 2, x: 0, y: 1
+                        )
                 )
         )
         .animation(.easeInOut(duration: 0.2), value: isFocused)

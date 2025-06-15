@@ -14,45 +14,47 @@ struct SelectedCountryCardView: View {
     var onTap: () -> Void
     
     var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 12) {
-                Text(country.flag)
-                    .font(.title2)
-                    .accessibilityHidden(true)
+        HStack(spacing: 12) {
+            Text(country.flag)
+                .font(.title2)
+                .accessibilityHidden(true)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(country.name)
+                    .font(.headline)
+                    .foregroundColor(.primary)
                 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(country.name)
-                        .font(.headline)
-                        .dynamicTypeSize(.medium ... .accessibility2)
-                        .foregroundColor(.blue)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    if let capital = country.capital {
-                        Text("\(AppStrings.capitalPrefix) \(capital)")
-                            .font(.subheadline)
-                            .dynamicTypeSize(.medium ... .accessibility2)
-                            .foregroundColor(.gray)
-                            .accessibilityLabel("\(AppStrings.capitalPrefix) \(capital)")
-                    }
+                if let capital = country.capital {
+                    Text("\(AppStrings.capitalPrefix) \(capital)")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .accessibilityLabel("\(AppStrings.capitalPrefix) \(capital)")
                 }
-                
-                Spacer()
-                
-                Image(systemName: AppStrings.trash)
-                    .gradientForeground()
-                    .accessibilityHidden(true)
-                    .onTapGesture {
-                        onDelete()
-                    }
             }
-            .padding()
-            .background(Color.white)
-            .cornerRadius(12)
-            .shadow(color: .black.opacity(0.05), radius: 3)
-            .padding(.horizontal)
+            
+            Spacer()
+            
+            Button(action: onDelete) {
+                ZStack {
+                    Circle()
+                        .fill(Color.white)
+                        .frame(width: 40, height: 40)
+                        .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                    
+                    Image(systemName: AppStrings.trash)
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.purple)
+                }
+            }
+            .accessibilityLabel("\(AppStrings.delete) \(country.name)")
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(country.name), \(country.capital ?? AppStrings.noSelectionTitle)")
-        .accessibilityHint(AppStrings.accessibilityHintCountryCard)
+        .padding()
+        .background(Color("CardBackground"))
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.05), radius: 6)
+        .padding(.horizontal)
+        .onTapGesture {
+            onTap()
+        }
     }
 }
