@@ -8,16 +8,6 @@
 import Foundation
 import CoreData
 
-protocol CountryLocalDataSourceProtocol {
-    func save(countries: [Country])
-    func getCachedCountries() -> [Country]
-    func clearCountries()
-    
-    func saveSelectedCountries(_ countries: [Country])
-    func getSelectedCountries() -> [Country]
-    func clearSelectedCountries()
-}
-
 final class CountryLocalDataSource: CountryLocalDataSourceProtocol {
     private let context = CoreDataStack.shared.context
     
