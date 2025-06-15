@@ -17,10 +17,13 @@ struct SelectedEmptyStateView: View {
                 .scaledToFit()
                 .frame(width: 80, height: 80)
                 .gradientForeground()
+                .accessibilityHidden(true)
             
             Text(AppStrings.noSelectionTitle)
                 .font(.headline)
                 .foregroundColor(.gray)
+                .accessibilityLabel(AppStrings.accessibilityLabelNoSelection)
+                .accessibilityHint(AppStrings.accessibilityHintNoSelection)
         }
         .padding()
         Spacer()

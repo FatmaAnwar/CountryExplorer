@@ -16,17 +16,24 @@ struct GradientSearchBar: View {
         HStack {
             Image(systemName: AppStrings.searchIcon)
                 .foregroundColor(.gray)
+                .accessibilityHidden(true)
             
             TextField(AppStrings.searchPlaceholder, text: $text)
                 .textFieldStyle(PlainTextFieldStyle())
                 .focused($isFocused)
                 .padding(.vertical, 8)
+                .font(.body)
+                .dynamicTypeSize(.medium ... .accessibility2)
+                .accessibilityLabel(AppStrings.searchPlaceholder)
+                .accessibilityHint(AppStrings.accessibilityHintSearch)
             
             if !text.isEmpty {
                 Button(action: { text = "" }) {
                     Image(systemName: AppStrings.clearIcon)
                         .foregroundColor(.gray)
                 }
+                .accessibilityLabel(AppStrings.accessibilityClearSearchLabel)
+                .accessibilityHint(AppStrings.accessibilityHintClearSearch)
             }
         }
         .padding(.horizontal)
@@ -34,10 +41,7 @@ struct GradientSearchBar: View {
             RoundedRectangle(cornerRadius: 14)
                 .strokeBorder(
                     LinearGradient(
-                        colors: [
-                            Color(red: 0.3, green: 0.6, blue: 1.0),
-                            Color(red: 0.7, green: 0.4, blue: 1.0)
-                        ],
+                        colors: [Color.blue, Color.purple],
                         startPoint: .leading,
                         endPoint: .trailing
                     ),

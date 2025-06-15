@@ -20,14 +20,12 @@ struct GradientButton: View {
                 .frame(maxWidth: .infinity)
                 .padding()
                 .background(
-                    LinearGradient(
-                        colors: [Color.blue, Color.purple],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
+                    LinearGradient(colors: [Color.blue, Color.purple], startPoint: .leading, endPoint: .trailing)
                 )
                 .cornerRadius(16)
                 .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
         }
+        .accessibilityLabel(title)
+        .accessibilityHint(AppStrings.accessibilityHintPerformAction)
     }
 }
