@@ -16,6 +16,7 @@ final class CountryListViewModel: ObservableObject {
     @Published private(set) var errorMessage: String?
     @Published var searchText: String = ""
     @Published private(set) var debouncedSearchText: String = ""
+    @Published var didReachSelectionLimit = false
     
     private let fetchCountriesUseCase: FetchCountriesUseCaseProtocol
     private let localDataSource: CountryLocalDataSourceProtocol
