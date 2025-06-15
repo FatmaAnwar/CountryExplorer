@@ -41,8 +41,18 @@ final class CountryListViewModel: ObservableObject {
         self.networkMonitor = networkMonitor
         self.debounceInterval = debounceInterval
         
-        setupDebounce()
-        observeSelectionChanges()
+        $searchText
+            .debounce(for: debounceInterval, scheduler: RunLoop.main)
+            .removeDuplicates()
+            .assign(to: &$debouncedSearchText)
+        
+        $selectedCountries
+            .dropFirst()
+            .sink { [weak self] updated in
+                self?.localDataSource.saveSelectedCountries(updated)
+            }
+            .store(in: &cancellables)
+        
         loadSelectedCountries()
     }
     
@@ -52,9 +62,9 @@ final class CountryListViewModel: ObservableObject {
         
         if networkMonitor.isConnected {
             do {
-                let remoteCountries = try await fetchCountriesUseCase.execute()
-                countries = remoteCountries
-                localDataSource.save(countries: remoteCountries)
+                let remote = try await fetchCountriesUseCase.execute()
+                countries = remote
+                localDataSource.save(countries: remote)
             } catch {
                 countries = localDataSource.getCachedCountries()
                 errorMessage = AppStrings.networkFallbackMessage
@@ -67,49 +77,17 @@ final class CountryListViewModel: ObservableObject {
         isLoading = false
     }
     
-    func toggleSelection(_ country: Country) -> Bool {
-        if let index = selectedCountries.firstIndex(where: { $0.alpha2Code == country.alpha2Code }) {
-            selectedCountries.remove(at: index)
-            return true
+    func toggleSelection(_ country: Country) {
+        if let idx = selectedCountries.firstIndex(where: { $0.alpha2Code == country.alpha2Code }) {
+            selectedCountries.remove(at: idx)
         } else if selectedCountries.count < 5 {
             selectedCountries.append(country)
-            return true
         } else {
-            return false
+            didReachSelectionLimit = true
         }
-    }
-    
-    func remove(_ country: Country) {
-        selectedCountries.removeAll { $0.id == country.id }
-    }
-    
-    func select(_ country: Country) {
-        guard !selectedCountries.contains(where: { $0.id == country.id }) else { return }
-        selectedCountries.append(country)
     }
     
     func loadSelectedCountries() {
         selectedCountries = localDataSource.getSelectedCountries()
-    }
-    
-    func cancelObservers() {
-        cancellables.forEach { $0.cancel() }
-        cancellables.removeAll()
-    }
-    
-    private func setupDebounce() {
-        $searchText
-            .debounce(for: debounceInterval, scheduler: RunLoop.main)
-            .removeDuplicates()
-            .assign(to: &$debouncedSearchText)
-    }
-    
-    private func observeSelectionChanges() {
-        $selectedCountries
-            .dropFirst()
-            .sink { [weak self] updated in
-                self?.localDataSource.saveSelectedCountries(updated)
-            }
-            .store(in: &cancellables)
     }
 }

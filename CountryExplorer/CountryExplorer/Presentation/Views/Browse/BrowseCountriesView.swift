@@ -11,14 +11,12 @@ import Combine
 
 struct BrowseCountriesView: View {
     @ObservedObject var viewModel: CountryListViewModel
-    @Environment(\.dismiss) private var dismiss
-    @State private var showAlert: Bool = false
+    let onDone: () -> Void
     
     var body: some View {
         NavigationView {
             ZStack {
                 Color.clear.gradientBackground()
-                
                 VStack(spacing: 0) {
                     GradientSearchBar(text: $viewModel.searchText)
                     
@@ -28,7 +26,7 @@ struct BrowseCountriesView: View {
                         CountryListSection(
                             countries: viewModel.filteredCountries,
                             selectedCountries: viewModel.selectedCountries,
-                            onToggle: toggleSelection(for:)
+                            onToggle: viewModel.toggleSelection(_:)
                         )
                         .padding(.top)
                     }
@@ -37,32 +35,23 @@ struct BrowseCountriesView: View {
             .navigationTitle(AppStrings.browseTitle)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(AppStrings.browseDone) {
-                        dismiss()
-                    }
+                    Button(AppStrings.browseDone, action: onDone)
                 }
             }
-            .overlay(
-                BrowseAlertOverlay(
-                    isVisible: $showAlert,
-                    title: AppStrings.browseLimitTitle,
-                    message: AppStrings.browseLimitMessage
-                )
-            )
-            .onAppear {
+            .overlay {
+                if viewModel.didReachSelectionLimit {
+                    BrowseAlertOverlay(
+                        isVisible: $viewModel.didReachSelectionLimit,
+                        title: AppStrings.browseLimitTitle,
+                        message: AppStrings.browseLimitMessage
+                    )
+                }
+            }
+            .task {
                 if viewModel.countries.isEmpty {
-                    Task {
-                        await viewModel.fetchCountries()
-                    }
+                    await viewModel.fetchCountries()
                 }
             }
-        }
-    }
-    
-    private func toggleSelection(for country: Country) {
-        let success = viewModel.toggleSelection(country)
-        if !success {
-            showAlert = true
         }
     }
 }

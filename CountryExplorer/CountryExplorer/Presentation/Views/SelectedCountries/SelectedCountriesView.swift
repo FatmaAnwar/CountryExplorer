@@ -1,5 +1,5 @@
 //
-//  SelectedCountryRowView.swift
+//  SelectedCountriesView.swift
 //  CountryExplorer
 //
 //  Created by Fatma Anwar on 15/06/2025.
@@ -9,9 +9,11 @@ import Foundation
 import SwiftUI
 
 struct SelectedCountriesView: View {
-    @StateObject private var viewModel = CountryListViewModel()
-    @State private var isShowingBrowse = false
-    @State private var selectedCountryForDetail: Country?
+    @ObservedObject var viewModel: CountryListViewModel
+    
+    let onBrowseTap: () -> Void
+    let onCountrySelected: (Country) -> Void
+    let onCountryRemoved: (Country) -> Void
     
     var body: some View {
         NavigationStack {
@@ -27,12 +29,8 @@ struct SelectedCountriesView: View {
                                 ForEach(viewModel.selectedCountries, id: \.id) { country in
                                     SelectedCountryCardView(
                                         country: country,
-                                        onDelete: {
-                                            viewModel.remove(country)
-                                        },
-                                        onTap: {
-                                            selectedCountryForDetail = country
-                                        }
+                                        onDelete: { onCountryRemoved(country) },
+                                        onTap: { onCountrySelected(country) }
                                     )
                                 }
                             }
@@ -40,19 +38,11 @@ struct SelectedCountriesView: View {
                         }
                     }
                     
-                    SelectedBrowseButton {
-                        isShowingBrowse = true
-                    }
-                    .padding(.bottom, 20)
+                    SelectedBrowseButton(onTap: onBrowseTap)
+                        .padding(.bottom, 20)
                 }
             }
             .navigationTitle(AppStrings.selectedCountriesTitle)
-            .navigationDestination(item: $selectedCountryForDetail) { country in
-                CountryDetailView(country: country)
-            }
-            .sheet(isPresented: $isShowingBrowse) {
-                BrowseCountriesView(viewModel: viewModel)
-            }
             .task {
                 await viewModel.fetchCountries()
             }
