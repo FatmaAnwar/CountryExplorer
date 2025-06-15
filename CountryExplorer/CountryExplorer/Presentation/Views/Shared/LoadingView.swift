@@ -25,10 +25,12 @@ struct LoadingView: View {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle(tint: .blue))
                     .scaleEffect(1.5)
-                
+                    .accessibilityLabel(AppStrings.accessibilityLabelLoading)
+
                 Text(AppStrings.loading)
                     .font(.headline)
                     .foregroundColor(.gray)
+                    .accessibilityHidden(true)
             }
             .padding(32)
             .background(Color.white.opacity(0.95))

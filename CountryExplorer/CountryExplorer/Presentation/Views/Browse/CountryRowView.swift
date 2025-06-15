@@ -17,14 +17,19 @@ struct CountryRowView: View {
         HStack {
             Text(country.flag)
                 .font(.title2)
+                .accessibilityHidden(true)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(country.name)
                     .font(.headline)
+                    .dynamicTypeSize(.medium ... .accessibility2)
+                
                 if let capital = country.capital {
                     Text(capital)
                         .font(.subheadline)
+                        .dynamicTypeSize(.medium ... .accessibility2)
                         .foregroundColor(.gray)
+                        .accessibilityLabel("\(AppStrings.capitalPrefix) \(capital)")
                 }
             }
             
@@ -34,6 +39,7 @@ struct CountryRowView: View {
                 .resizable()
                 .frame(width: 22, height: 22)
                 .foregroundColor(isSelected ? .green : .blue)
+                .accessibilityHidden(true)
         }
         .padding()
         .background(isSelected ? Color.green.opacity(0.15) : Color.white)
@@ -43,5 +49,9 @@ struct CountryRowView: View {
         .onTapGesture {
             onTap()
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(country.name)
+        .accessibilityValue(isSelected ? AppStrings.accessibilityValueSelected : AppStrings.accessibilityValueNotSelected)
+        .accessibilityHint(AppStrings.accessibilityHintSelectCountry)
     }
 }

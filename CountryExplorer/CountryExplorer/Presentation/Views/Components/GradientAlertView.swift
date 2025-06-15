@@ -33,6 +33,8 @@ struct GradientAlertView: View {
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
+            .accessibilityLabel(AppStrings.accessibilityLabelOK)
+            .accessibilityHint(AppStrings.accessibilityHintDismissAlert)
         }
         .padding()
         .background(
@@ -48,5 +50,8 @@ struct GradientAlertView: View {
         .cornerRadius(20)
         .shadow(color: .black.opacity(0.2), radius: 10)
         .padding(.horizontal, 40)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(title)
+        .accessibilityValue(message)
     }
 }

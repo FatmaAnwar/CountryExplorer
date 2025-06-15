@@ -59,4 +59,25 @@ enum AppStrings {
     static let networkMonitorQueueLabel = "NetworkMonitorQueue"
     static let networkFallbackMessage = "Loaded from cache due to network issue."
     static let offlineMessage = "You are offline. Displaying cached data."
+    
+    // MARK: - Accessibility Labels
+    static let accessibilityClearSearchLabel = "Clear search"
+    static let accessibilityLabelLoading = "Loading"
+    static let accessibilityLabelMapPrefix = "Map showing location of"
+    static let accessibilityLabelNoSelection = "No countries selected"
+    static let accessibilityLabelOK = "OK"
+    
+    // MARK: - Accessibility Hints
+    static let accessibilityHintBrowseCountries = "Double-tap to browse countries"
+    static let accessibilityHintClearSearch = "Double-tap to clear the search field"
+    static let accessibilityHintCountryCard = "Double-tap to view country details. Swipe up or down to delete."
+    static let accessibilityHintDismissAlert = "Dismisses alert"
+    static let accessibilityHintNoSelection = "Use the browse button to add countries"
+    static let accessibilityHintPerformAction = "Double-tap to perform action"
+    static let accessibilityHintSearch = "Type to filter country list."
+    static let accessibilityHintSelectCountry = "Double-tap to select or unselect."
+    
+    // MARK: - Accessibility Values
+    static let accessibilityValueSelected = "Selected"
+    static let accessibilityValueNotSelected = "Not selected"
 }

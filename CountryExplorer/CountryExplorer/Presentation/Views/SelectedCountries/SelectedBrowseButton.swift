@@ -27,5 +27,7 @@ struct SelectedBrowseButton: View {
                 .cornerRadius(12)
                 .padding(.horizontal)
         }
+        .accessibilityLabel(AppStrings.browseButtonTitle)
+        .accessibilityHint(AppStrings.accessibilityHintBrowseCountries)
     }
 }

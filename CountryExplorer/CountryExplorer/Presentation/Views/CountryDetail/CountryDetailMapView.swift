@@ -21,6 +21,8 @@ struct CountryDetailMapView: View {
         .cornerRadius(16)
         .padding(.horizontal)
         .shadow(radius: 6)
+        .accessibilityElement()
+        .accessibilityLabel("\(AppStrings.accessibilityLabelMapPrefix) \(country.name)")
     }
     
     private var annotationItems: [CountryAnnotationItem] {

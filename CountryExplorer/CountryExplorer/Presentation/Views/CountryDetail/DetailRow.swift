@@ -14,9 +14,8 @@ struct DetailRow: View {
     
     var body: some View {
         HStack(alignment: .top) {
-            Text("\(label):")
-                .font(.subheadline.weight(.semibold))
-                .foregroundColor(.primary)
+            Text("")
+                .accessibilityHidden(true)
             
             Spacer(minLength: 12)
             
@@ -25,5 +24,8 @@ struct DetailRow: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.trailing)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(label)
+        .accessibilityValue(value)
     }
 }

@@ -20,11 +20,12 @@ struct BrowseAlertOverlay: View {
                     Color.black.opacity(0.3).ignoresSafeArea()
                     GradientAlertView(
                         title: title,
-                        message: message
-                    ) {
-                        isVisible = false
-                    }
+                        message: message,
+                        onDismiss: { isVisible = false }
+                    )
                 }
+                .accessibilityElement(children: .contain)
+                .accessibilityAddTraits(.isModal)
             }
         }
     }
