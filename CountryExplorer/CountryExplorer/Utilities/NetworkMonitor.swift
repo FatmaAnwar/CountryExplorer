@@ -7,24 +7,25 @@
 
 import Foundation
 import Network
+import Combine
 
-final class NetworkMonitor {
+final class NetworkMonitor: NetworkMonitorProtocol {
     static let shared = NetworkMonitor()
     
     private let monitor: NWPathMonitor
-    private let queue = DispatchQueue(label: "NetworkMonitor")
+    private let queue = DispatchQueue(label: AppStrings.networkMonitorQueueLabel)
     
     @Published private(set) var isConnected: Bool = true
     
     var isConnectedSync: Bool {
-        return monitor.currentPath.status == .satisfied
+        monitor.currentPath.status == .satisfied
     }
     
     private init() {
         self.monitor = NWPathMonitor()
-        self.monitor.pathUpdateHandler = { path in
+        self.monitor.pathUpdateHandler = { [weak self] path in
             DispatchQueue.main.async {
-                self.isConnected = (path.status == .satisfied)
+                self?.isConnected = (path.status == .satisfied)
             }
         }
         self.monitor.start(queue: queue)

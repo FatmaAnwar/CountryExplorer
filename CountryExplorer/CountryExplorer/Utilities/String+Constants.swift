@@ -46,4 +46,7 @@ enum AppStrings {
     
     // MARK: - API Endpoints
     static let apiAllCountriesEndpoint = "https://restcountries.com/v2/all?fields=name,capital,currencies,alpha2Code,latlng"
+    
+    // MARK: - Network
+    static let networkMonitorQueueLabel = "NetworkMonitorQueue"
 }
