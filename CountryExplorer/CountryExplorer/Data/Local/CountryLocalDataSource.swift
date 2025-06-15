@@ -16,13 +16,7 @@ final class CountryLocalDataSource: CountryLocalDataSourceProtocol {
         
         for country in countries {
             let entity = CDCountry(context: context)
-            entity.name = country.name
-            entity.capital = country.capital
-            entity.alpha2Code = country.alpha2Code
-            entity.lat = country.latlng?.first ?? 0
-            entity.lng = country.latlng?.last ?? 0
-            entity.flag = country.flag
-            entity.currencies = try? JSONEncoder().encode(country.currencies).base64EncodedString()
+            CountryEntityMapper.toEntity(country, into: entity)
         }
         
         CoreDataStack.shared.saveContext()
@@ -33,20 +27,7 @@ final class CountryLocalDataSource: CountryLocalDataSourceProtocol {
         
         do {
             let result = try context.fetch(request)
-            return result.compactMap { cd in
-                guard
-                    let name = cd.name,
-                    let alpha2Code = cd.alpha2Code
-                else { return nil }
-                
-                return Country(
-                    name: name,
-                    capital: cd.capital,
-                    currencies: decodeCurrencies(from: cd.currencies),
-                    alpha2Code: alpha2Code,
-                    latlng: [cd.lat, cd.lng]
-                )
-            }
+            return result.compactMap { CountryEntityMapper.fromEntity($0) }
         } catch {
             return []
         }
@@ -63,13 +44,7 @@ final class CountryLocalDataSource: CountryLocalDataSourceProtocol {
         
         for country in countries {
             let entity = CDSelectedCountry(context: context)
-            entity.name = country.name
-            entity.capital = country.capital
-            entity.alpha2Code = country.alpha2Code
-            entity.lat = country.latlng?.first ?? 0
-            entity.lng = country.latlng?.last ?? 0
-            entity.flag = country.flag
-            entity.currencies = try? JSONEncoder().encode(country.currencies).base64EncodedString()
+            CountryEntityMapper.toSelectedEntity(country, into: entity)
         }
         
         CoreDataStack.shared.saveContext()
@@ -80,20 +55,7 @@ final class CountryLocalDataSource: CountryLocalDataSourceProtocol {
         
         do {
             let result = try context.fetch(request)
-            return result.compactMap { cd in
-                guard
-                    let name = cd.name,
-                    let alpha2Code = cd.alpha2Code
-                else { return nil }
-                
-                return Country(
-                    name: name,
-                    capital: cd.capital,
-                    currencies: decodeCurrencies(from: cd.currencies),
-                    alpha2Code: alpha2Code,
-                    latlng: [cd.lat, cd.lng]
-                )
-            }
+            return result.compactMap { CountryEntityMapper.fromSelectedEntity($0) }
         } catch {
             return []
         }
@@ -103,14 +65,5 @@ final class CountryLocalDataSource: CountryLocalDataSourceProtocol {
         let request: NSFetchRequest<NSFetchRequestResult> = CDSelectedCountry.fetchRequest()
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
         _ = try? context.execute(deleteRequest)
-    }
-    
-    private func decodeCurrencies(from base64: String?) -> [Country.Currency]? {
-        guard
-            let base64 = base64,
-            let data = Data(base64Encoded: base64)
-        else { return nil }
-        
-        return try? JSONDecoder().decode([Country.Currency].self, from: data)
     }
 }

@@ -16,6 +16,7 @@ final class CountryRemoteDataSource: CountryRemoteDataSourceProtocol {
     
     func fetchAllCountries() async throws -> [Country] {
         let url = URL(string: "https://restcountries.com/v2/all?fields=name,capital,currencies,alpha2Code,latlng")!
-        return try await apiService.fetch(from: url)
+        let dtos: [CountryDTO] = try await apiService.fetch(from: url)
+        return CountryDTOMapper.mapList(dtos)
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MapKit
 
 struct CountryAnnotationItem: Identifiable {
     let id: UUID
