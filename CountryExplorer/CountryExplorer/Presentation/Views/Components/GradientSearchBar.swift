@@ -11,20 +11,20 @@ import SwiftUI
 struct GradientSearchBar: View {
     @Binding var text: String
     @FocusState private var isFocused: Bool
-
+    
     var body: some View {
         HStack {
-            Image(systemName: "magnifyingglass")
+            Image(systemName: AppStrings.searchIcon)
                 .foregroundColor(.gray)
-
-            TextField("Search countries", text: $text)
+            
+            TextField(AppStrings.searchPlaceholder, text: $text)
                 .textFieldStyle(PlainTextFieldStyle())
                 .focused($isFocused)
                 .padding(.vertical, 8)
-
+            
             if !text.isEmpty {
                 Button(action: { text = "" }) {
-                    Image(systemName: "xmark.circle.fill")
+                    Image(systemName: AppStrings.clearIcon)
                         .foregroundColor(.gray)
                 }
             }

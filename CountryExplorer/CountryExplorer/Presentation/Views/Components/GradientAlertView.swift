@@ -25,7 +25,7 @@ struct GradientAlertView: View {
                 .multilineTextAlignment(.center)
             
             Button(action: onDismiss) {
-                Text("OK")
+                Text(AppStrings.ok)
                     .bold()
                     .padding(.horizontal, 32)
                     .padding(.vertical, 10)

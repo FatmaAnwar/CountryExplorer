@@ -14,10 +14,10 @@ final class CoreDataStack {
     private init() {}
     
     lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "CountryExplorerModel")
+        let container = NSPersistentContainer(name: AppStrings.coreDataModelName)
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
-                fatalError("Unresolved Core Data error \(error), \(error.userInfo)")
+                fatalError("\(AppStrings.coreDataLoadError): \(error), \(error.userInfo)")
             }
         }
         return container
@@ -34,7 +34,7 @@ final class CoreDataStack {
                 try context.save()
             } catch {
                 let nserror = error as NSError
-                fatalError("Unresolved Core Data save error \(nserror), \(nserror.userInfo)")
+                fatalError("\(AppStrings.coreDataSaveError): \(nserror), \(nserror.userInfo)")
             }
         }
     }
