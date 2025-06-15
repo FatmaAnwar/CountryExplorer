@@ -97,4 +97,16 @@ final class CountryListViewModel: ObservableObject {
             }
         }
     }
+    
+    func toggleSelection(_ country: Country) -> Bool {
+        if let index = selectedCountries.firstIndex(where: { $0.alpha2Code == country.alpha2Code }) {
+            selectedCountries.remove(at: index)
+            return true
+        } else if selectedCountries.count < 5 {
+            selectedCountries.append(country)
+            return true
+        } else {
+            return false
+        }
+    }
 }

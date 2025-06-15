@@ -12,7 +12,6 @@ import Combine
 struct BrowseCountriesView: View {
     @ObservedObject var viewModel: CountryListViewModel
     @Environment(\.dismiss) private var dismiss
-    
     @State private var showAlert: Bool = false
     
     var body: some View {
@@ -26,18 +25,12 @@ struct BrowseCountriesView: View {
                     if viewModel.isLoading {
                         LoadingView()
                     } else {
-                        ScrollView {
-                            LazyVStack(spacing: 12) {
-                                ForEach(viewModel.filteredCountries, id: \.id) { country in
-                                    CountryRowView(
-                                        country: country,
-                                        isSelected: isSelected(country),
-                                        onTap: { toggleSelection(for: country) }
-                                    )
-                                }
-                            }
-                            .padding(.top)
-                        }
+                        CountryListSection(
+                            countries: viewModel.filteredCountries,
+                            selectedCountries: viewModel.selectedCountries,
+                            onToggle: toggleSelection(for:)
+                        )
+                        .padding(.top)
                     }
                 }
             }
@@ -50,19 +43,11 @@ struct BrowseCountriesView: View {
                 }
             }
             .overlay(
-                Group {
-                    if showAlert {
-                        ZStack {
-                            Color.black.opacity(0.3).ignoresSafeArea()
-                            GradientAlertView(
-                                title: AppStrings.browseLimitTitle,
-                                message: AppStrings.browseLimitMessage
-                            ) {
-                                showAlert = false
-                            }
-                        }
-                    }
-                }
+                BrowseAlertOverlay(
+                    isVisible: $showAlert,
+                    title: AppStrings.browseLimitTitle,
+                    message: AppStrings.browseLimitMessage
+                )
             )
             .onAppear {
                 if viewModel.countries.isEmpty {
@@ -74,16 +59,9 @@ struct BrowseCountriesView: View {
         }
     }
     
-    private func isSelected(_ country: Country) -> Bool {
-        viewModel.selectedCountries.contains { $0.alpha2Code == country.alpha2Code }
-    }
-    
     private func toggleSelection(for country: Country) {
-        if let index = viewModel.selectedCountries.firstIndex(where: { $0.alpha2Code == country.alpha2Code }) {
-            viewModel.selectedCountries.remove(at: index)
-        } else if viewModel.selectedCountries.count < 5 {
-            viewModel.selectedCountries.append(country)
-        } else {
+        let success = viewModel.toggleSelection(country)
+        if !success {
             showAlert = true
         }
     }
