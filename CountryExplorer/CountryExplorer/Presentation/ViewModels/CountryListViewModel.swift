@@ -21,6 +21,7 @@ final class CountryListViewModel: ObservableObject {
     private let fetchCountriesUseCase: FetchCountriesUseCaseProtocol
     private let localDataSource: CountryLocalDataSourceProtocol
     private let networkMonitor: NetworkMonitorProtocol
+    private let locationManager: CountryLocationManagerProtocol
     private let debounceInterval: RunLoop.SchedulerTimeType.Stride
     
     private var cancellables = Set<AnyCancellable>()
@@ -35,11 +36,13 @@ final class CountryListViewModel: ObservableObject {
         fetchCountriesUseCase: FetchCountriesUseCaseProtocol = FetchCountriesUseCase(),
         localDataSource: CountryLocalDataSourceProtocol = CountryLocalDataSource(),
         networkMonitor: NetworkMonitorProtocol = NetworkMonitor.shared,
+        locationManager: CountryLocationManagerProtocol = CountryLocationManager(),
         debounceInterval: RunLoop.SchedulerTimeType.Stride = .milliseconds(300)
     ) {
         self.fetchCountriesUseCase = fetchCountriesUseCase
         self.localDataSource = localDataSource
         self.networkMonitor = networkMonitor
+        self.locationManager = locationManager
         self.debounceInterval = debounceInterval
         
         $searchText
@@ -75,12 +78,49 @@ final class CountryListViewModel: ObservableObject {
             errorMessage = AppStrings.offlineMessage
         }
         
+        loadSelectedCountries()
+        
+        if selectedCountries.isEmpty {
+            await autoSelectBasedOnLocation()
+            loadSelectedCountries()
+        }
+        
         isLoading = false
+    }
+    
+    private func autoSelectBasedOnLocation() async {
+        await withCheckedContinuation { continuation in
+            locationManager.getUserCountryCode { [weak self] code in
+                guard let self else {
+                    continuation.resume()
+                    return
+                }
+                
+                let lowercasedCode = code?.lowercased()
+                
+                if let code = lowercasedCode,
+                   let match = self.countries.first(where: { $0.alpha2Code.lowercased() == code }) {
+                    self.setSelectedCountry(match)
+                } else {
+                    if let egypt = self.countries.first(where: { $0.alpha2Code.lowercased() == "eg" }) {
+                        self.setSelectedCountry(egypt)
+                    }
+                }
+                
+                continuation.resume()
+            }
+        }
     }
     
     func toggleSelection(_ country: Country) {
         if let idx = selectedCountries.firstIndex(where: { $0.alpha2Code == country.alpha2Code }) {
             selectedCountries.remove(at: idx)
+            
+            if selectedCountries.isEmpty {
+                Task {
+                    await autoSelectBasedOnLocation()
+                }
+            }
         } else if selectedCountries.count < 5 {
             selectedCountries.append(country)
         } else {
@@ -90,6 +130,11 @@ final class CountryListViewModel: ObservableObject {
     
     func loadSelectedCountries() {
         selectedCountries = localDataSource.getSelectedCountries()
+    }
+    
+    private func setSelectedCountry(_ country: Country) {
+        self.selectedCountries = [country]
+        self.localDataSource.saveSelectedCountries([country])
     }
     
 #if DEBUG
