@@ -14,7 +14,7 @@ struct GradientSearchBar: View {
 
     var body: some View {
         HStack {
-            Image(systemName: "magnifyingglass")
+            Image(systemName: searchIcon)
                 .foregroundColor(.gray)
 
             TextField(AppStrings.searchPlaceholder, text: $text)
@@ -24,7 +24,7 @@ struct GradientSearchBar: View {
 
             if !text.isEmpty {
                 Button(action: { text = "" }) {
-                    Image(systemName: "xmark.circle.fill")
+                    Image(systemName: clearIcon)
                         .foregroundColor(.gray)
                 }
             }

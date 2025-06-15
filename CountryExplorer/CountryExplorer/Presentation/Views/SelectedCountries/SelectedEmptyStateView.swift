@@ -12,7 +12,7 @@ struct SelectedEmptyStateView: View {
     var body: some View {
         Spacer()
         VStack(spacing: 12) {
-            Image(systemName: "globe.europe.africa.fill")
+            Image(systemName: AppStrings.globe)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 80, height: 80)

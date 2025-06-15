@@ -35,7 +35,7 @@ struct SelectedCountryCardView: View {
 
                 Spacer()
 
-                Image(systemName: "trash")
+                Image(systemName: AppStrings.trash)
                     .gradientForeground()
                     .onTapGesture {
                         onDelete()

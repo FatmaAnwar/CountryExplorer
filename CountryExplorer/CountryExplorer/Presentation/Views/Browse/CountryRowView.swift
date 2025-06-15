@@ -30,7 +30,7 @@ struct CountryRowView: View {
             
             Spacer()
             
-            Image(systemName: isSelected ? "checkmark.circle.fill" : "plus.circle.fill")
+            Image(systemName: isSelected ? AppStrings.checkmarkCircle : AppStrings.plusCircle)
                 .resizable()
                 .frame(width: 22, height: 22)
                 .foregroundColor(isSelected ? .green : .blue)

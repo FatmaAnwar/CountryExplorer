@@ -39,6 +39,14 @@ enum AppStrings {
     // MARK: - Loading
     static let loading = "Loading..."
     
+    // MARK: - System images
+    static let globe = "globe.europe.africa.fill"
+    static let searchIcon = "magnifyingglass"
+    static let clearIcon = "xmark.circle.fill"
+    static let trash = "trash"
+    static let checkmarkCircle = "checkmark.circle.fill"
+    static let plusCircle = "plus.circle.fill"
+    
     // MARK: - Core Data
     static let coreDataModelName = "CountryExplorerModel"
     static let coreDataLoadError = "Unresolved Core Data load error"
