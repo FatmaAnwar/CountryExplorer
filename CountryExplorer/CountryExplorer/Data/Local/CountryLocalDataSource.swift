@@ -33,11 +33,10 @@ final class CountryLocalDataSource: CountryLocalDataSourceProtocol {
     
     func clearCountries() {
         let request: NSFetchRequest<NSFetchRequestResult> = CDCountry.fetchRequest()
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
-        _ = try? context.execute(deleteRequest)
+        if let objects = try? context.fetch(request as! NSFetchRequest<CDCountry>) {
+            objects.forEach { context.delete($0) }
+        }
     }
-    
-    // MARK: - Selected Countries
     
     func saveSelectedCountries(_ countries: [Country]) {
         clearSelectedCountries()
@@ -57,7 +56,8 @@ final class CountryLocalDataSource: CountryLocalDataSourceProtocol {
     
     func clearSelectedCountries() {
         let request: NSFetchRequest<NSFetchRequestResult> = CDSelectedCountry.fetchRequest()
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
-        _ = try? context.execute(deleteRequest)
+        if let objects = try? context.fetch(request as! NSFetchRequest<CDSelectedCountry>) {
+            objects.forEach { context.delete($0) }
+        }
     }
 }
